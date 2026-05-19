@@ -1,0 +1,712 @@
+﻿========================================================================================================================================================= TEACHING HTML, CSS & JAVASCRIPT WITH THE GWC JOBS BOARD A Project-Based Curriculum
+Target audience: Beginners to advanced beginners (ages ~14+) Total duration: ~24-30 hours across 12 lessons Prerequisites: None — basic computer literacy only Format: Self-paced or instructor-led; each lesson stands alone but builds on the previous
+================================================================================ TEACHING PHILOSOPHY
+This curriculum is built on three principles that research consistently shows produce better outcomes than the traditional "syntax first, projects later" approach:
+1. CODE FIRST, THEORY SECOND Learners see a working, polished site on day one. They modify it before they understand it. Curiosity drives the questions; lessons answer them.
+
+2. CHANGE ONE THING AT A TIME Every exercise asks the learner to change exactly one variable and observe the result. This builds cause-and-effect intuition far faster than reading documentation.
+
+3. BREAK IT ON PURPOSE Each lesson includes "Break it!" exercises where learners intentionally sabotage the code to see what errors look like. Debugging skill comes from familiarity with failure, not avoidance of it.
+
+The GWC Jobs board is ideal as a teaching vehicle because it contains every foundational web technology in a small, readable codebase:
+HTML: Semantic structure, forms, accessibility, the DOM tree CSS: Layout (flex/grid), responsive design, animations, custom properties JS: DOM manipulation, events, state, async/fetch, JSON, arrays/objects
+================================================================================ HOW TO USE THIS PLAN
+Each lesson follows the same structure:
+GOAL One sentence describing what the learner can do after CORE CONCEPTS The terminology and ideas introduced WARM-UP 5-10 minute exploration before any instruction GUIDED PRACTICE Instructor walks through 1-2 modifications together CHALLENGE Independent exercises with increasing difficulty BREAK IT Intentional sabotage exercises with predicted outcomes STRETCH Optional advanced extension for fast finishers CHECK-IN Three questions to confirm understanding
+Instructors should resist the urge to lecture. The site IS the textbook. Open it. Open DevTools. Point at things. Ask questions.
+================================================================================ UNIT 1 — HTML: THE SKELETON
+Estimated time: 6-8 hours across 4 lessons
+________________
+
+
+LESSON 1: WHAT YOU'RE LOOKING AT (1.5 hr)
+GOAL: Learner can identify HTML, CSS, and JS roles by inspecting any webpage.
+CORE CONCEPTS:
+   * The three languages of the web (structure, style, behavior)
+   * Browser DevTools: Elements panel
+   * View Source vs. Inspect Element
+WARM-UP (15 min): Open the GWC Jobs site. Without explaining anything, ask: "Where do you think the word 'GWC Jobs' lives in the code? What about the indigo color? What about the part that makes the star turn yellow when clicked?" Take guesses. Don't correct them yet.
+GUIDED PRACTICE (30 min):
+   1. Right-click "GWC Jobs" in the header → Inspect
+   2. Show the Elements panel highlighting the matching <div>
+   3. Observe how hovering DOM nodes highlights the page region
+   4. Show the Computed/Styles panel — point out HTML, CSS, JS sources
+CHALLENGE (30 min):
+   1. Find the H1 in the hero. What does its text say?
+   2. Find the search bar's <input>. What's its placeholder?
+   3. Find the first job card. List all classes on it.
+   4. Find one element whose color comes from --primary
+BREAK IT (10 min): In Elements panel, double-click "GWC Jobs" and rename it to "MY JOBS". Refresh. What happened to your change? Why? (Answer: DevTools edits are temporary; the file on disk is unchanged.)
+CHECK-IN:
+   * What's the difference between HTML, CSS, and JS in one sentence each?
+   * Why did your DevTools edit disappear on refresh?
+   * Where in DevTools would you look to find the color of a button?
+________________
+
+
+LESSON 2: TAGS, ELEMENTS, AND THE TREE (1.5 hr)
+GOAL: Learner can read and write basic HTML structure.
+CORE CONCEPTS:
+   * Tags vs. elements vs. nodes
+   * Opening tags, closing tags, self-closing
+   * Nesting and the DOM tree
+   * Common tags: div, span, h1-h6, p, a, button, input, ul/li, img
+WARM-UP: Show the job card HTML in the rendered listings. Ask the learner to draw the nesting structure on paper as a tree.
+GUIDED PRACTICE: Open index.html in a text editor. Walk through: <header> <nav class="nav"> <div class="logo">...</div> <div class="nav-links">...</div> </nav> </header> Explain "parent", "child", "sibling" using this snippet.
+CHALLENGE:
+   1. Add a fifth nav button after "Post a Job" with the text "About"
+   2. Add a second <h1> below the hero with your own headline
+   3. Add a <p> describing yourself somewhere in the hero
+BREAK IT:
+   1. Remove a closing </div> tag and reload. What happens to the layout?
+   2. Swap a <button> for a <div> with the same content. What changes? (The button loses keyboard accessibility and click feedback.)
+STRETCH: Read the HTML for one full job card. Identify every tag used and explain why that tag was chosen over a generic <div>.
+CHECK-IN:
+   * What does "nesting" mean?
+   * Why would you choose <button> over <div>?
+   * What's the parent of the .job-title element?
+________________
+
+
+LESSON 3: ATTRIBUTES AND SEMANTIC HTML (1.5 hr)
+GOAL: Learner uses class, id, href, src, type, and aria-* attributes correctly.
+CORE CONCEPTS:
+   * Attributes (key="value" inside opening tag)
+   * class vs id (many vs. one)
+   * Semantic tags: header, nav, main, section, article, footer
+   * Accessibility basics: alt text, labels, aria-label
+WARM-UP: Find every unique class name on a single job card. Why are there so many? Why not just one class per element?
+GUIDED PRACTICE: Show the search bar: <input type="text" id="search-input" placeholder="Search by title..." /> Walk through each attribute. Change type="text" to type="email" and observe behavior.
+CHALLENGE:
+   1. Add an aria-label to the bookmark star buttons
+   2. Wrap the company logo in an <a> tag pointing to "#"
+   3. Add an id to the hero so you can link to it with #the-id-name in URL
+BREAK IT:
+   1. Give two different elements the same id. Open DevTools console — any warnings? (Often silent, but causes bugs in JS.)
+   2. Remove the placeholder from the search input. What replaces it?
+CHECK-IN:
+   * When should you use id vs. class?
+   * Why does the page use <header> instead of <div class="header">?
+   * What does the alt attribute do, and why does it matter?
+________________
+
+
+LESSON 4: FORMS — INPUTS, LABELS, AND SUBMISSION (2 hr)
+GOAL: Learner can build a working form with appropriate input types.
+CORE CONCEPTS:
+   * <form>, <input>, <textarea>, <select>, <option>, <label>
+   * Input types: text, email, url, password, number, date
+   * Required fields and basic validation
+   * Why this site avoids <form> tags (single-page-app pattern)
+WARM-UP: Open the "Apply for Position" modal. List every form field you see. Pair each with its likely input type.
+GUIDED PRACTICE: Find the post-a-job form in index.html. Walk through: <div class="form-group"> <label>Job Title *</label> <input type="text" id="post-title" placeholder="..." /> </div> Discuss the label/input relationship and the form-group wrapper pattern.
+CHALLENGE: Add a new field to the apply form: "Years of Experience".
+   * Use type="number"
+   * Give it a min of 0 and max of 50
+   * Give it an id of "apply-experience" (We'll wire it up to actually send in a JS lesson.)
+BREAK IT:
+   1. Change apply-email's type to "text". Try submitting "not an email." Does it warn you? Why or why not?
+   2. Remove a placeholder. Is the field still functional?
+STRETCH: Research <fieldset> and <legend>. Refactor the post-a-job form's "Location and Type" row to use them. Discuss the accessibility benefit.
+CHECK-IN:
+   * What's the difference between a placeholder and a label?
+   * Why does type="email" matter in modern browsers?
+   * Name three input types you'd use in a sign-up form.
+================================================================================ UNIT 2 — CSS: VISUAL DESIGN AND LAYOUT
+Estimated time: 8-10 hours across 4 lessons
+________________
+
+
+LESSON 5: SELECTORS, PROPERTIES, AND THE CASCADE (2 hr)
+GOAL: Learner can target any element on the page and change its appearance.
+CORE CONCEPTS:
+   * Selectors: tag, .class, #id, descendant, child, pseudo (:hover, :focus)
+   * Properties and values
+   * The cascade and specificity (briefly)
+   * Browser defaults vs. CSS reset
+WARM-UP: Open DevTools → click any job card → look at the Styles panel. How many CSS rules apply to that one element? Scroll through them.
+GUIDED PRACTICE: In DevTools, find .job-card and change padding from 1.5rem to 3rem. Then change border-radius from 12px to 0. Discuss what each does. Refresh — changes disappear. This teaches "CSS lives in files, DevTools is a sandbox."
+CHALLENGE: Edit styles.css and:
+   1. Change the page background from --bg to a warm color (#fef3c7)
+   2. Make all job titles uppercase
+   3. Give the hero section a 3px solid bottom border in --accent
+   4. Make every <button> have rounded corners of 24px
+BREAK IT:
+   1. Delete the .job-card rule entirely. What does the page look like?
+   2. Add * { color: red; } at the top. What happens? Why isn't EVERYTHING red? (Hint: specificity)
+CHECK-IN:
+   * What's the difference between .nav and #nav?
+   * What does the cascade do when two rules conflict?
+   * How do you target a button only when it's being hovered?
+________________
+
+
+LESSON 6: THE BOX MODEL AND SPACING (2 hr)
+GOAL: Learner can confidently control spacing and sizing of any element.
+CORE CONCEPTS:
+   * The four-part box: content, padding, border, margin
+   * box-sizing: border-box (used throughout this site)
+   * Units: px, %, rem, em, vh/vw
+   * DevTools box diagram (lower right of Elements panel)
+WARM-UP: Inspect a job card. Find the box model diagram in DevTools. Identify where padding, border, and margin are visualized.
+GUIDED PRACTICE: Show .job-card { padding: 1.5rem; }. Open DevTools, change padding-top only to 5rem. Watch the box diagram update live.
+CHALLENGE:
+   1. Make the hero twice as tall by adjusting its vertical padding
+   2. Add 1rem of margin between the search bar and the filters
+   3. Make the company logo 80px x 80px instead of 48px x 48px
+   4. Change the modal max-width to 90% on desktop
+BREAK IT:
+   1. Remove box-sizing: border-box from the * reset rule. What happens to the layout? (Padding now adds to width, breaking grids.)
+   2. Set body width to 200vw. Try scrolling.
+STRETCH: Replace every rem unit in the .filters block with px. Then resize the browser font in Settings. What's the difference in behavior?
+CHECK-IN:
+   * What's the difference between padding and margin?
+   * Why does this site use rem instead of px for most spacing?
+   * What does 100vh mean?
+________________
+
+
+LESSON 7: FLEXBOX AND GRID — MODERN LAYOUT (2.5 hr)
+GOAL: Learner can recreate any one-dimensional or two-dimensional layout.
+CORE CONCEPTS:
+   * display: flex — main axis, cross axis
+   * justify-content, align-items, gap
+   * display: grid — rows, columns, auto-fill
+   * When to use flex vs. grid
+WARM-UP: Inspect the .nav element. What CSS properties make the logo on the left and the buttons on the right? Try removing each property in DevTools.
+GUIDED PRACTICE: Walk through .jobs-grid: display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; Resize the browser window slowly. Count how many columns appear at different widths. Explain the "responsive without media queries" magic.
+CHALLENGE:
+   1. Make the nav put the logo in the CENTER and buttons split left/right
+   2. Change the jobs grid to always show exactly 2 columns
+   3. Change it to always show exactly 3 columns
+   4. Make the filters panel stack vertically instead of horizontally
+BREAK IT:
+   1. Remove display: flex from .nav. What happens?
+   2. Change gap: 1.25rem to gap: 0. Then to gap: 10rem.
+STRETCH: Build a new layout for the saved jobs view using grid: a sidebar with filters on the left (200px wide) and the job grid on the right (auto).
+CHECK-IN:
+   * When would you choose flex over grid?
+   * What does auto-fill with minmax() do?
+   * How do justify-content and align-items differ in a flex container?
+________________
+
+
+LESSON 8: RESPONSIVE DESIGN, ANIMATIONS, AND VARIABLES (2 hr)
+GOAL: Learner can adapt designs to different screens and add motion.
+CORE CONCEPTS:
+   * @media queries
+   * CSS custom properties (variables)
+   * transition vs. @keyframes animation
+   * transform (translate, scale, rotate)
+WARM-UP: Resize the browser window from 1200px down to 320px. Watch what changes at exactly 640px. Find the @media rule responsible.
+GUIDED PRACTICE: Show the :root variables. Change --primary in DevTools to red. Watch every button, link, and accent color update simultaneously. Discuss why this is more powerful than search-and-replace.
+CHALLENGE:
+   1. Add a new @media query that activates above 1200px and increases the max-width of main to 1400px
+   2. Change the color palette to a warm theme (terracotta + sand)
+   3. Add a transition to .nav-btn so background-color animates over 0.3s
+   4. Add a subtle bounce animation to the bookmark star when clicked
+BREAK IT:
+   1. Remove the @media query entirely. What happens on mobile?
+   2. Set --primary to "banana". What's the fallback behavior?
+STRETCH: Build a dark mode toggle. Add a [data-theme="dark"] selector on <html>, override the :root variables inside it, and use JS to flip the attribute.
+CHECK-IN:
+   * What's a breakpoint?
+   * Why use --primary instead of hardcoding #4338ca everywhere?
+   * What does transition: all 0.2s do?
+================================================================================ UNIT 3 — JAVASCRIPT: BEHAVIOR AND DATA
+Estimated time: 10-12 hours across 4 lessons
+________________
+
+
+LESSON 9: VARIABLES, DATA, AND THE CONSOLE (2 hr)
+GOAL: Learner can read, modify, and reason about JavaScript data.
+CORE CONCEPTS:
+   * let, const, var (and why we prefer const)
+   * Types: string, number, boolean, array, object, null, undefined
+   * The browser console as a REPL
+   * JSON: how objects and arrays look in text
+WARM-UP: Open DevTools → Console. Type: jobs What appears? How many items? Click into one — what fields does it have?
+GUIDED PRACTICE: In the console: jobs.length jobs[0] jobs[0].title jobs[0].tags savedJobs savedJobs.size Discuss what each line does. Note these are LIVE data.
+CHALLENGE: In script.js's sampleJobs array:
+   1. Add a 13th job with all required fields
+   2. Change the salary of job 1 to "$200k+"
+   3. Add a new tag "Hybrid" to three different jobs
+   4. Add a new top-level field featured: true to two jobs (it won't show yet — that's fine; we'll display it later)
+BREAK IT:
+   1. Remove the comma between two objects in sampleJobs. What error?
+   2. Use let instead of const for EMPLOYER_PASSKEY then reassign it in the console. Does it work? (Yes, with let. const would throw.)
+CHECK-IN:
+   * What's the difference between a string and a number?
+   * How do you access the third item of an array?
+   * What's an object key?
+________________
+
+
+LESSON 10: FUNCTIONS AND THE DOM (3 hr)
+GOAL: Learner can write functions that read and modify the page.
+CORE CONCEPTS:
+   * function declarations and arrow functions
+   * parameters and return values
+   * document.getElementById, querySelector, querySelectorAll
+   * element.textContent, .innerHTML, .classList, .value
+   * The DOM is just a JavaScript representation of HTML
+WARM-UP: In the console, try: document.getElementById('search-input').value = 'engineering' Notice the search bar updates visually but no results filter yet. Why?
+GUIDED PRACTICE: Walk through switchView() in script.js: 1. Reads which view button was clicked 2. Loops over all .view divs and removes 'active' from each 3. Adds 'active' to the chosen one This is the entire pattern of single-page apps in microcosm.
+CHALLENGE:
+   1. Write a function countRemoteJobs() that returns how many jobs in the jobs array have type === "Remote". Test it in the console.
+   2. Write highlightFirstJob() that adds a red border to the first .job-card. Test it.
+   3. Add a new function clearSaved() that empties the savedJobs set and re-renders. Wire it to a new button in the saved view.
+BREAK IT:
+   1. Change document.getElementById('search-input') to use a wrong ID. What error appears? Where?
+   2. Inside renderJobs(), remove the call to escapeHtml(). Then post a job with the title <img src=x onerror="alert(1)">. What happens? (This teaches XSS in a single dramatic demo.)
+STRETCH: Refactor the inline onclick="..." handlers in renderJobs() to use addEventListener instead. Discuss event delegation as a follow-up.
+CHECK-IN:
+   * What's the difference between textContent and innerHTML?
+   * Why is innerHTML dangerous with user input?
+   * What does a function "return"?
+________________
+
+
+LESSON 11: EVENTS AND STATE (3 hr)
+GOAL: Learner can handle user input and manage application state.
+CORE CONCEPTS:
+   * Event listeners (click, input, change, keydown, submit)
+   * The event object (event.target, event.key)
+   * event.stopPropagation and event.preventDefault
+   * "State" — variables that change over time
+   * Re-rendering after state changes
+WARM-UP: Add a console.log inside applyFilters(). Now interact with the filters — open the console and watch the function fire on every keystroke.
+GUIDED PRACTICE: Walk through toggleSave(): - Reads current state from savedJobs Set - Mutates it (add or remove) - Calls applyFilters() and renderSaved() to update the UI Discuss the pattern: "state changes → re-render → UI reflects state."
+CHALLENGE:
+   1. Add a "Clear All Filters" button that resets every filter to default and re-runs applyFilters()
+   2. Add keyboard support: pressing Escape closes any open modal
+   3. Add a counter in the nav that shows total applications submitted during the session (you'll need a new state variable)
+   4. Make the search work as you type (no need to press Enter)
+BREAK IT:
+   1. Remove event.stopPropagation() from the bookmark button. Click a star. What happens? Why? (The job card click also fires, opening the detail modal.)
+   2. Change addEventListener('click', ...) to addEventListener('hover', ...). Does it work? (No — there's no 'hover' event; it's mouseenter/leave.)
+STRETCH: Implement a "Recently Viewed" feature: track the last 5 jobs the user opened. Show them in a new section on the listings view.
+CHECK-IN:
+   * What's the difference between an event and an event listener?
+   * Why does the bookmark button need stopPropagation?
+   * What's "state" in your own words?
+________________
+
+
+LESSON 12: ASYNC, FETCH, AND TALKING TO SERVERS (3 hr)
+GOAL: Learner can fetch and send data to external APIs.
+CORE CONCEPTS:
+   * Synchronous vs. asynchronous code
+   * Promises, .then(), .catch()
+   * async/await syntax
+   * fetch() and HTTP methods (GET, POST)
+   * JSON serialization (stringify/parse)
+   * Why we can't put database credentials in browser code
+WARM-UP: In the console: fetch('https://api.github.com/users/torvalds').then(r => r.json()).then(console.log) Watch the response appear after the console returns. Discuss "later."
+GUIDED PRACTICE: Walk through loadJobsFromSheet(): 1. Calls fetch with the Apps Script URL 2. Awaits the response 3. Parses JSON 4. If successful, assigns to jobs; if not, falls back to samples 5. Calls applyFilters() to render Note that the page initially shows samples, then "snaps" to real data. This is your async behavior visible to the eye.
+CHALLENGE:
+   1. Add a loading spinner that shows while loadJobsFromSheet() runs
+   2. Add error handling that displays a banner if the fetch fails
+   3. Modify submitApplication() to also log a unique submission ID to the console after success
+   4. Add a "Refresh Jobs" button that re-runs loadJobsFromSheet()
+BREAK IT:
+   1. Change the SHEETS_API URL to a fake one. What happens at page load?
+   2. Forget to call res.json() and try to use the response directly.
+   3. Use fetch without await — what type is the return value?
+STRETCH: Add pagination: the API currently returns all jobs at once. Modify both the Apps Script and the frontend so that listJobs accepts offset and limit parameters, and the frontend loads 20 jobs at a time with a "Load More" button.
+CHECK-IN:
+   * What's the difference between sync and async code?
+   * Why can't you just put SQL queries in your browser JavaScript?
+   * What does fetch return? (A Promise that resolves to a Response.)
+================================================================================ CAPSTONE PROJECT
+Estimated time: 4-8 hours
+After completing all 12 lessons, the learner should fork the GWC Jobs project and add ONE substantial new feature of their own design. Examples:
+   * User accounts with login (using Google/GitHub OAuth)
+   * Job categories displayed as a browseable taxonomy
+   * Salary range slider filter
+   * Map view of jobs by location
+   * Email digest of new jobs (using Apps Script triggers)
+   * A "match score" between applicant skills and job tags
+   * Admin dashboard showing application stats from the sheet
+   * Dark mode toggle with localStorage persistence
+   * Job comparison view (select 2-3 jobs, compare side-by-side)
+   * Markdown support in job descriptions
+The capstone should require touching all three layers: HTML for new structure, CSS for new styles, and JS for new behavior. Bonus points if it requires Apps Script changes too.
+================================================================================ APPENDIX A — INSTRUCTOR NOTES
+PACING: Lessons assume a roughly 2-hour session. If learners are slower, split each lesson into two sessions and shrink the challenges. If faster, do the stretch goals and pair-program the challenges in half the time.
+COMMON STUMBLING BLOCKS:
+   * "Why doesn't my change appear?" → Forgot to save the file
+   * "Why does it look broken?" → Mismatched bracket/brace; check console
+   * "My fetch returns weird data" → Forgot to await res.json()
+   * "Nothing happens when I click" → Selector is wrong; element not yet in DOM; or event listener attached to wrong element
+WHAT TO AVOID:
+   * Lecturing for more than 5 minutes at a stretch
+   * Letting learners fix typos for them — make them read the error
+   * Skipping the BREAK IT exercises (they're the most educational)
+   * Introducing frameworks (React, Vue) before this foundation is solid
+ASSESSMENT IDEAS:
+   * Code review: pair learners, have each explain the other's changes
+   * "Show and tell": at the end of each unit, learners demo what they built
+   * Build-from-scratch: at the end, have them rebuild a job card from nothing, no peeking — this surfaces what they actually retained
+================================================================================ APPENDIX B — VOCABULARY CHECKLIST
+By the end of the curriculum, learners should comfortably use these terms:
+HTML: tag, element, attribute, parent, child, sibling, semantic, form, input, label, placeholder, DOM
+CSS: selector, property, value, cascade, specificity, class, id, rule, declaration, box model, padding, margin, border, flexbox, grid, responsive, breakpoint, custom property, pseudo-class, transition, transform, keyframes
+JS: variable, constant, function, parameter, argument, return, array, object, property, method, loop, conditional, event, listener, callback, Promise, async, await, fetch, JSON, state, render, scope
+================================================================================ END OF LESSON PLAN
+======= TEACHING HTML, CSS & JAVASCRIPT WITH THE GWC JOBS BOARD A Project-Based Curriculum
+Target audience: Beginners to advanced beginners (ages ~14+) Total duration: ~24-30 hours across 12 lessons Prerequisites: None — basic computer literacy only Format: Self-paced or instructor-led; each lesson stands alone but builds on the previous
+================================================================================ TEACHING PHILOSOPHY
+This curriculum is built on three principles that research consistently shows produce better outcomes than the traditional "syntax first, projects later" approach:
+   1. CODE FIRST, THEORY SECOND Learners see a working, polished site on day one. They modify it before they understand it. Curiosity drives the questions; lessons answer them.
+
+   2. CHANGE ONE THING AT A TIME Every exercise asks the learner to change exactly one variable and observe the result. This builds cause-and-effect intuition far faster than reading documentation.
+
+   3. BREAK IT ON PURPOSE Each lesson includes "Break it!" exercises where learners intentionally sabotage the code to see what errors look like. Debugging skill comes from familiarity with failure, not avoidance of it.
+
+The GWC Jobs board is ideal as a teaching vehicle because it contains every foundational web technology in a small, readable codebase:
+HTML: Semantic structure, forms, accessibility, the DOM tree CSS: Layout (flex/grid), responsive design, animations, custom properties JS: DOM manipulation, events, state, async/fetch, JSON, arrays/objects
+================================================================================ HOW TO USE THIS PLAN
+Each lesson follows the same structure:
+GOAL One sentence describing what the learner can do after CORE CONCEPTS The terminology and ideas introduced WARM-UP 5-10 minute exploration before any instruction GUIDED PRACTICE Instructor walks through 1-2 modifications together CHALLENGE Independent exercises with increasing difficulty BREAK IT Intentional sabotage exercises with predicted outcomes STRETCH Optional advanced extension for fast finishers CHECK-IN Three questions to confirm understanding
+Instructors should resist the urge to lecture. The site IS the textbook. Open it. Open DevTools. Point at things. Ask questions.
+================================================================================ UNIT 1 — HTML: THE SKELETON
+Estimated time: 6-8 hours across 4 lessons
+________________
+
+
+LESSON 1: WHAT YOU'RE LOOKING AT (1.5 hr)
+GOAL: Learner can identify HTML, CSS, and JS roles by inspecting any webpage.
+CORE CONCEPTS:
+      * The three languages of the web (structure, style, behavior)
+      * Browser DevTools: Elements panel
+      * View Source vs. Inspect Element
+WARM-UP (15 min): Open the GWC Jobs site. Without explaining anything, ask: "Where do you think the word 'GWC Jobs' lives in the code? What about the indigo color? What about the part that makes the star turn yellow when clicked?" Take guesses. Don't correct them yet.
+GUIDED PRACTICE (30 min):
+      1. Right-click "GWC Jobs" in the header → Inspect
+      2. Show the Elements panel highlighting the matching <div>
+      3. Observe how hovering DOM nodes highlights the page region
+      4. Show the Computed/Styles panel — point out HTML, CSS, JS sources
+CHALLENGE (30 min):
+      1. Find the H1 in the hero. What does its text say?
+      2. Find the search bar's <input>. What's its placeholder?
+      3. Find the first job card. List all classes on it.
+      4. Find one element whose color comes from --primary
+BREAK IT (10 min): In Elements panel, double-click "GWC Jobs" and rename it to "MY JOBS". Refresh. What happened to your change? Why? (Answer: DevTools edits are temporary; the file on disk is unchanged.)
+CHECK-IN:
+      * What's the difference between HTML, CSS, and JS in one sentence each?
+      * Why did your DevTools edit disappear on refresh?
+      * Where in DevTools would you look to find the color of a button?
+________________
+
+
+LESSON 2: TAGS, ELEMENTS, AND THE TREE (1.5 hr)
+GOAL: Learner can read and write basic HTML structure.
+CORE CONCEPTS:
+      * Tags vs. elements vs. nodes
+      * Opening tags, closing tags, self-closing
+      * Nesting and the DOM tree
+      * Common tags: div, span, h1-h6, p, a, button, input, ul/li, img
+WARM-UP: Show the job card HTML in the rendered listings. Ask the learner to draw the nesting structure on paper as a tree.
+GUIDED PRACTICE: Open index.html in a text editor. Walk through: <header> <nav class="nav"> <div class="logo">...</div> <div class="nav-links">...</div> </nav> </header> Explain "parent", "child", "sibling" using this snippet.
+CHALLENGE:
+      1. Add a fifth nav button after "Post a Job" with the text "About"
+      2. Add a second <h1> below the hero with your own headline
+      3. Add a <p> describing yourself somewhere in the hero
+BREAK IT:
+      1. Remove a closing </div> tag and reload. What happens to the layout?
+      2. Swap a <button> for a <div> with the same content. What changes? (The button loses keyboard accessibility and click feedback.)
+STRETCH: Read the HTML for one full job card. Identify every tag used and explain why that tag was chosen over a generic <div>.
+CHECK-IN:
+      * What does "nesting" mean?
+      * Why would you choose <button> over <div>?
+      * What's the parent of the .job-title element?
+________________
+
+
+LESSON 3: ATTRIBUTES AND SEMANTIC HTML (1.5 hr)
+GOAL: Learner uses class, id, href, src, type, and aria-* attributes correctly.
+CORE CONCEPTS:
+      * Attributes (key="value" inside opening tag)
+      * class vs id (many vs. one)
+      * Semantic tags: header, nav, main, section, article, footer
+      * Accessibility basics: alt text, labels, aria-label
+WARM-UP: Find every unique class name on a single job card. Why are there so many? Why not just one class per element?
+GUIDED PRACTICE: Show the search bar: <input type="text" id="search-input" placeholder="Search by title..." /> Walk through each attribute. Change type="text" to type="email" and observe behavior.
+CHALLENGE:
+      1. Add an aria-label to the bookmark star buttons
+      2. Wrap the company logo in an <a> tag pointing to "#"
+      3. Add an id to the hero so you can link to it with #the-id-name in URL
+BREAK IT:
+      1. Give two different elements the same id. Open DevTools console — any warnings? (Often silent, but causes bugs in JS.)
+      2. Remove the placeholder from the search input. What replaces it?
+CHECK-IN:
+      * When should you use id vs. class?
+      * Why does the page use <header> instead of <div class="header">?
+      * What does the alt attribute do, and why does it matter?
+________________
+
+
+LESSON 4: FORMS — INPUTS, LABELS, AND SUBMISSION (2 hr)
+GOAL: Learner can build a working form with appropriate input types.
+CORE CONCEPTS:
+      * <form>, <input>, <textarea>, <select>, <option>, <label>
+      * Input types: text, email, url, password, number, date
+      * Required fields and basic validation
+      * Why this site avoids <form> tags (single-page-app pattern)
+WARM-UP: Open the "Apply for Position" modal. List every form field you see. Pair each with its likely input type.
+GUIDED PRACTICE: Find the post-a-job form in index.html. Walk through: <div class="form-group"> <label>Job Title *</label> <input type="text" id="post-title" placeholder="..." /> </div> Discuss the label/input relationship and the form-group wrapper pattern.
+CHALLENGE: Add a new field to the apply form: "Years of Experience".
+      * Use type="number"
+      * Give it a min of 0 and max of 50
+      * Give it an id of "apply-experience" (We'll wire it up to actually send in a JS lesson.)
+BREAK IT:
+      1. Change apply-email's type to "text". Try submitting "not an email." Does it warn you? Why or why not?
+      2. Remove a placeholder. Is the field still functional?
+STRETCH: Research <fieldset> and <legend>. Refactor the post-a-job form's "Location and Type" row to use them. Discuss the accessibility benefit.
+CHECK-IN:
+      * What's the difference between a placeholder and a label?
+      * Why does type="email" matter in modern browsers?
+      * Name three input types you'd use in a sign-up form.
+================================================================================ UNIT 2 — CSS: VISUAL DESIGN AND LAYOUT
+Estimated time: 8-10 hours across 4 lessons
+________________
+
+
+LESSON 5: SELECTORS, PROPERTIES, AND THE CASCADE (2 hr)
+GOAL: Learner can target any element on the page and change its appearance.
+CORE CONCEPTS:
+      * Selectors: tag, .class, #id, descendant, child, pseudo (:hover, :focus)
+      * Properties and values
+      * The cascade and specificity (briefly)
+      * Browser defaults vs. CSS reset
+WARM-UP: Open DevTools → click any job card → look at the Styles panel. How many CSS rules apply to that one element? Scroll through them.
+GUIDED PRACTICE: In DevTools, find .job-card and change padding from 1.5rem to 3rem. Then change border-radius from 12px to 0. Discuss what each does. Refresh — changes disappear. This teaches "CSS lives in files, DevTools is a sandbox."
+CHALLENGE: Edit styles.css and:
+      1. Change the page background from --bg to a warm color (#fef3c7)
+      2. Make all job titles uppercase
+      3. Give the hero section a 3px solid bottom border in --accent
+      4. Make every <button> have rounded corners of 24px
+BREAK IT:
+      1. Delete the .job-card rule entirely. What does the page look like?
+      2. Add * { color: red; } at the top. What happens? Why isn't EVERYTHING red? (Hint: specificity)
+CHECK-IN:
+      * What's the difference between .nav and #nav?
+      * What does the cascade do when two rules conflict?
+      * How do you target a button only when it's being hovered?
+________________
+
+
+LESSON 6: THE BOX MODEL AND SPACING (2 hr)
+GOAL: Learner can confidently control spacing and sizing of any element.
+CORE CONCEPTS:
+      * The four-part box: content, padding, border, margin
+      * box-sizing: border-box (used throughout this site)
+      * Units: px, %, rem, em, vh/vw
+      * DevTools box diagram (lower right of Elements panel)
+WARM-UP: Inspect a job card. Find the box model diagram in DevTools. Identify where padding, border, and margin are visualized.
+GUIDED PRACTICE: Show .job-card { padding: 1.5rem; }. Open DevTools, change padding-top only to 5rem. Watch the box diagram update live.
+CHALLENGE:
+      1. Make the hero twice as tall by adjusting its vertical padding
+      2. Add 1rem of margin between the search bar and the filters
+      3. Make the company logo 80px x 80px instead of 48px x 48px
+      4. Change the modal max-width to 90% on desktop
+BREAK IT:
+      1. Remove box-sizing: border-box from the * reset rule. What happens to the layout? (Padding now adds to width, breaking grids.)
+      2. Set body width to 200vw. Try scrolling.
+STRETCH: Replace every rem unit in the .filters block with px. Then resize the browser font in Settings. What's the difference in behavior?
+CHECK-IN:
+      * What's the difference between padding and margin?
+      * Why does this site use rem instead of px for most spacing?
+      * What does 100vh mean?
+________________
+
+
+LESSON 7: FLEXBOX AND GRID — MODERN LAYOUT (2.5 hr)
+GOAL: Learner can recreate any one-dimensional or two-dimensional layout.
+CORE CONCEPTS:
+      * display: flex — main axis, cross axis
+      * justify-content, align-items, gap
+      * display: grid — rows, columns, auto-fill
+      * When to use flex vs. grid
+WARM-UP: Inspect the .nav element. What CSS properties make the logo on the left and the buttons on the right? Try removing each property in DevTools.
+GUIDED PRACTICE: Walk through .jobs-grid: display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; Resize the browser window slowly. Count how many columns appear at different widths. Explain the "responsive without media queries" magic.
+CHALLENGE:
+      1. Make the nav put the logo in the CENTER and buttons split left/right
+      2. Change the jobs grid to always show exactly 2 columns
+      3. Change it to always show exactly 3 columns
+      4. Make the filters panel stack vertically instead of horizontally
+BREAK IT:
+      1. Remove display: flex from .nav. What happens?
+      2. Change gap: 1.25rem to gap: 0. Then to gap: 10rem.
+STRETCH: Build a new layout for the saved jobs view using grid: a sidebar with filters on the left (200px wide) and the job grid on the right (auto).
+CHECK-IN:
+      * When would you choose flex over grid?
+      * What does auto-fill with minmax() do?
+      * How do justify-content and align-items differ in a flex container?
+________________
+
+
+LESSON 8: RESPONSIVE DESIGN, ANIMATIONS, AND VARIABLES (2 hr)
+GOAL: Learner can adapt designs to different screens and add motion.
+CORE CONCEPTS:
+      * @media queries
+      * CSS custom properties (variables)
+      * transition vs. @keyframes animation
+      * transform (translate, scale, rotate)
+WARM-UP: Resize the browser window from 1200px down to 320px. Watch what changes at exactly 640px. Find the @media rule responsible.
+GUIDED PRACTICE: Show the :root variables. Change --primary in DevTools to red. Watch every button, link, and accent color update simultaneously. Discuss why this is more powerful than search-and-replace.
+CHALLENGE:
+      1. Add a new @media query that activates above 1200px and increases the max-width of main to 1400px
+      2. Change the color palette to a warm theme (terracotta + sand)
+      3. Add a transition to .nav-btn so background-color animates over 0.3s
+      4. Add a subtle bounce animation to the bookmark star when clicked
+BREAK IT:
+      1. Remove the @media query entirely. What happens on mobile?
+      2. Set --primary to "banana". What's the fallback behavior?
+STRETCH: Build a dark mode toggle. Add a [data-theme="dark"] selector on <html>, override the :root variables inside it, and use JS to flip the attribute.
+CHECK-IN:
+      * What's a breakpoint?
+      * Why use --primary instead of hardcoding #4338ca everywhere?
+      * What does transition: all 0.2s do?
+================================================================================ UNIT 3 — JAVASCRIPT: BEHAVIOR AND DATA
+Estimated time: 10-12 hours across 4 lessons
+________________
+
+
+LESSON 9: VARIABLES, DATA, AND THE CONSOLE (2 hr)
+GOAL: Learner can read, modify, and reason about JavaScript data.
+CORE CONCEPTS:
+      * let, const, var (and why we prefer const)
+      * Types: string, number, boolean, array, object, null, undefined
+      * The browser console as a REPL
+      * JSON: how objects and arrays look in text
+WARM-UP: Open DevTools → Console. Type: jobs What appears? How many items? Click into one — what fields does it have?
+GUIDED PRACTICE: In the console: jobs.length jobs[0] jobs[0].title jobs[0].tags savedJobs savedJobs.size Discuss what each line does. Note these are LIVE data.
+CHALLENGE: In script.js's sampleJobs array:
+      1. Add a 13th job with all required fields
+      2. Change the salary of job 1 to "$200k+"
+      3. Add a new tag "Hybrid" to three different jobs
+      4. Add a new top-level field featured: true to two jobs (it won't show yet — that's fine; we'll display it later)
+BREAK IT:
+      1. Remove the comma between two objects in sampleJobs. What error?
+      2. Use let instead of const for EMPLOYER_PASSKEY then reassign it in the console. Does it work? (Yes, with let. const would throw.)
+CHECK-IN:
+      * What's the difference between a string and a number?
+      * How do you access the third item of an array?
+      * What's an object key?
+________________
+
+
+LESSON 10: FUNCTIONS AND THE DOM (3 hr)
+GOAL: Learner can write functions that read and modify the page.
+CORE CONCEPTS:
+      * function declarations and arrow functions
+      * parameters and return values
+      * document.getElementById, querySelector, querySelectorAll
+      * element.textContent, .innerHTML, .classList, .value
+      * The DOM is just a JavaScript representation of HTML
+WARM-UP: In the console, try: document.getElementById('search-input').value = 'engineering' Notice the search bar updates visually but no results filter yet. Why?
+GUIDED PRACTICE: Walk through switchView() in script.js: 1. Reads which view button was clicked 2. Loops over all .view divs and removes 'active' from each 3. Adds 'active' to the chosen one This is the entire pattern of single-page apps in microcosm.
+CHALLENGE:
+      1. Write a function countRemoteJobs() that returns how many jobs in the jobs array have type === "Remote". Test it in the console.
+      2. Write highlightFirstJob() that adds a red border to the first .job-card. Test it.
+      3. Add a new function clearSaved() that empties the savedJobs set and re-renders. Wire it to a new button in the saved view.
+BREAK IT:
+      1. Change document.getElementById('search-input') to use a wrong ID. What error appears? Where?
+      2. Inside renderJobs(), remove the call to escapeHtml(). Then post a job with the title <img src=x onerror="alert(1)">. What happens? (This teaches XSS in a single dramatic demo.)
+STRETCH: Refactor the inline onclick="..." handlers in renderJobs() to use addEventListener instead. Discuss event delegation as a follow-up.
+CHECK-IN:
+      * What's the difference between textContent and innerHTML?
+      * Why is innerHTML dangerous with user input?
+      * What does a function "return"?
+________________
+
+
+LESSON 11: EVENTS AND STATE (3 hr)
+GOAL: Learner can handle user input and manage application state.
+CORE CONCEPTS:
+      * Event listeners (click, input, change, keydown, submit)
+      * The event object (event.target, event.key)
+      * event.stopPropagation and event.preventDefault
+      * "State" — variables that change over time
+      * Re-rendering after state changes
+WARM-UP: Add a console.log inside applyFilters(). Now interact with the filters — open the console and watch the function fire on every keystroke.
+GUIDED PRACTICE: Walk through toggleSave(): - Reads current state from savedJobs Set - Mutates it (add or remove) - Calls applyFilters() and renderSaved() to update the UI Discuss the pattern: "state changes → re-render → UI reflects state."
+CHALLENGE:
+      1. Add a "Clear All Filters" button that resets every filter to default and re-runs applyFilters()
+      2. Add keyboard support: pressing Escape closes any open modal
+      3. Add a counter in the nav that shows total applications submitted during the session (you'll need a new state variable)
+      4. Make the search work as you type (no need to press Enter)
+BREAK IT:
+      1. Remove event.stopPropagation() from the bookmark button. Click a star. What happens? Why? (The job card click also fires, opening the detail modal.)
+      2. Change addEventListener('click', ...) to addEventListener('hover', ...). Does it work? (No — there's no 'hover' event; it's mouseenter/leave.)
+STRETCH: Implement a "Recently Viewed" feature: track the last 5 jobs the user opened. Show them in a new section on the listings view.
+CHECK-IN:
+      * What's the difference between an event and an event listener?
+      * Why does the bookmark button need stopPropagation?
+      * What's "state" in your own words?
+________________
+
+
+LESSON 12: ASYNC, FETCH, AND TALKING TO SERVERS (3 hr)
+GOAL: Learner can fetch and send data to external APIs.
+CORE CONCEPTS:
+      * Synchronous vs. asynchronous code
+      * Promises, .then(), .catch()
+      * async/await syntax
+      * fetch() and HTTP methods (GET, POST)
+      * JSON serialization (stringify/parse)
+      * Why we can't put database credentials in browser code
+WARM-UP: In the console: fetch('https://api.github.com/users/torvalds').then(r => r.json()).then(console.log) Watch the response appear after the console returns. Discuss "later."
+GUIDED PRACTICE: Walk through loadJobsFromSheet(): 1. Calls fetch with the Apps Script URL 2. Awaits the response 3. Parses JSON 4. If successful, assigns to jobs; if not, falls back to samples 5. Calls applyFilters() to render Note that the page initially shows samples, then "snaps" to real data. This is your async behavior visible to the eye.
+CHALLENGE:
+      1. Add a loading spinner that shows while loadJobsFromSheet() runs
+      2. Add error handling that displays a banner if the fetch fails
+      3. Modify submitApplication() to also log a unique submission ID to the console after success
+      4. Add a "Refresh Jobs" button that re-runs loadJobsFromSheet()
+BREAK IT:
+      1. Change the SHEETS_API URL to a fake one. What happens at page load?
+      2. Forget to call res.json() and try to use the response directly.
+      3. Use fetch without await — what type is the return value?
+STRETCH: Add pagination: the API currently returns all jobs at once. Modify both the Apps Script and the frontend so that listJobs accepts offset and limit parameters, and the frontend loads 20 jobs at a time with a "Load More" button.
+CHECK-IN:
+      * What's the difference between sync and async code?
+      * Why can't you just put SQL queries in your browser JavaScript?
+      * What does fetch return? (A Promise that resolves to a Response.)
+================================================================================ CAPSTONE PROJECT
+Estimated time: 4-8 hours
+After completing all 12 lessons, the learner should fork the GWC Jobs project and add ONE substantial new feature of their own design. Examples:
+      * User accounts with login (using Google/GitHub OAuth)
+      * Job categories displayed as a browseable taxonomy
+      * Salary range slider filter
+      * Map view of jobs by location
+      * Email digest of new jobs (using Apps Script triggers)
+      * A "match score" between applicant skills and job tags
+      * Admin dashboard showing application stats from the sheet
+      * Dark mode toggle with localStorage persistence
+      * Job comparison view (select 2-3 jobs, compare side-by-side)
+      * Markdown support in job descriptions
+The capstone should require touching all three layers: HTML for new structure, CSS for new styles, and JS for new behavior. Bonus points if it requires Apps Script changes too.
+================================================================================ APPENDIX A — INSTRUCTOR NOTES
+PACING: Lessons assume a roughly 2-hour session. If learners are slower, split each lesson into two sessions and shrink the challenges. If faster, do the stretch goals and pair-program the challenges in half the time.
+COMMON STUMBLING BLOCKS:
+      * "Why doesn't my change appear?" → Forgot to save the file
+      * "Why does it look broken?" → Mismatched bracket/brace; check console
+      * "My fetch returns weird data" → Forgot to await res.json()
+      * "Nothing happens when I click" → Selector is wrong; element not yet in DOM; or event listener attached to wrong element
+WHAT TO AVOID:
+      * Lecturing for more than 5 minutes at a stretch
+      * Letting learners fix typos for them — make them read the error
+      * Skipping the BREAK IT exercises (they're the most educational)
+      * Introducing frameworks (React, Vue) before this foundation is solid
+ASSESSMENT IDEAS:
+      * Code review: pair learners, have each explain the other's changes
+      * "Show and tell": at the end of each unit, learners demo what they built
+      * Build-from-scratch: at the end, have them rebuild a job card from nothing, no peeking — this surfaces what they actually retained
+================================================================================ APPENDIX B — VOCABULARY CHECKLIST
+By the end of the curriculum, learners should comfortably use these terms:
+HTML: tag, element, attribute, parent, child, sibling, semantic, form, input, label, placeholder, DOM
+CSS: selector, property, value, cascade, specificity, class, id, rule, declaration, box model, padding, margin, border, flexbox, grid, responsive, breakpoint, custom property, pseudo-class, transition, transform, keyframes
+JS: variable, constant, function, parameter, argument, return, array, object, property, method, loop, conditional, event, listener, callback, Promise, async, await, fetch, JSON, state, render, scope
+================================================================================ END OF LESSON PLAN

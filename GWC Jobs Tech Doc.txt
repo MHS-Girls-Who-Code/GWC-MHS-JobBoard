@@ -1,0 +1,216 @@
+﻿================================================================================ GWC JOBS — TECHNICAL DOCUMENTATION
+Project: GWC Job Board Version: 1.0 Last updated: May 19, 2026
+This document describes the two main parts of the project: PART 1 — The frontend (index.html, styles.css, script.js) PART 2 — The Google Apps Script Web API backend PART 3 — The Google Sheet schema (database) PART 4 — Third-party integrations (Formspree) PART 5 — Configuration reference PART 6 — Deployment & maintenance PART 7 — Troubleshooting
+================================================================================ PART 1 — FRONTEND
+________________
+
+
+1.1 OVERVIEW
+The frontend is a single-page application written in plain HTML, CSS, and JavaScript — no frameworks, no build step. It is delivered to the browser as three files (or, in the artifact preview, one combined file):
+index.html Structure and content styles.css All visual styling script.js All interactivity and API calls
+The page uses a "view switching" pattern: multiple <div class="view"> sections exist in the DOM, and JavaScript toggles which one is visible. There is no client-side routing.
+________________
+
+
+1.2 FILE: index.html
+Contains the static structure of the application. Key regions:
+<header> Sticky navigation bar with logo, "Browse Jobs", "Saved (N)", and the primary "Post a Job" call-to-action button. <div id="view-listings" class="view active"> The default view. Contains: - Hero section with search bar - Filter panel (category, type, location, sort) - Results header showing job count - <div id="jobs-grid"> — populated by JavaScript <div id="view-saved" class="view"> Hidden by default. Shows bookmarked jobs in <div id="saved-grid">.
+Modals (hidden by default, revealed by adding .active class): #modal-detail Full job detail view with "Apply Now" button #modal-passkey Passkey entry gate for employers #modal-post "Post a Job" form (revealed after passkey) #modal-apply "Apply for Position" form
+<div id="toast"> Floating notification element used for success/error messages.
+________________
+1.3 FILE: styles.css
+Uses CSS custom properties (variables) defined on :root for theming. Key variables:
+--primary #4338ca (deep indigo, main brand color) --primary-dark #3730a3 (hover state for primary buttons) --primary-light #6366f1 (gradient end color) --accent #f59e0b (amber, used for bookmark stars) --bg #f8fafc (page background) --surface #ffffff (cards, modals) --text #0f172a (primary text) --text-muted #64748b (secondary text) --border #e2e8f0 (dividers and outlines) --success #10b981 --danger #ef4444 --radius 12px --radius-sm 8px
+Layout strategy:
+* Mobile-first responsive design
+* CSS Grid for the jobs listing (auto-fill, minmax(320px, 1fr))
+* Flexbox for navigation and modal layouts
+* One media query at max-width: 640px adjusts hero, nav, and form rows
+Key animation classes: .shake used on incorrect passkey entry .fadeIn view transitions .slideUp modal entrance
+________________
+
+
+1.4 FILE: script.js
+Organized into the following logical sections (commented in the code):
+===== Config ===== Constants for passkey, Formspree endpoints, and Apps Script URL. See PART 5 for current values.
+===== Sample Data ===== Array sampleJobs containing 12 fallback job listings. These are shown only if the Google Sheet is empty or unreachable.
+===== State ===== let jobs Array of current job objects (from sheet or sample) let savedJobs Set of job IDs bookmarked in this session let isEmployerVerified Boolean, true after correct passkey entry let currentDetailJobId Tracks which job's detail is currently open
+===== Sheets API ===== loadJobsFromSheet() Fetches the current job list from the Apps Script Web App on page load. Falls back to sampleJobs on error.
+===== Rendering ===== getInitials(name) Generates the two-letter logo for a company formatPosted(days) "Posted today" / "Posted 3 days ago" / etc. renderJobs(list, target) Renders an array of jobs into a container ID escapeHtml(str) Prevents XSS by escaping user-provided strings
+===== Filtering ===== applyFilters() Reads all filter inputs, filters the jobs array, sorts it, and re-renders the grid. Called on input change, search submit, and after any data mutation.
+===== Save / Bookmark ===== toggleSave(id) Adds or removes a job from savedJobs renderSaved() Re-renders the saved view updateSavedCount() Updates the count badge in the nav
+===== Views ===== switchView(viewName) Toggles between 'listings' and 'saved'
+===== Detail Modal ===== openJobDetail(id) Builds and shows the full job detail modal
+===== Apply ===== openApply(job) Opens the application form submitApplication() POSTs to Apps Script + Formspree backup
+===== Passkey & Post Job ===== openPostJob() Opens passkey modal, or post form if verified verifyPasskey() Client-side passkey check (UX gate only) submitJob() POSTs to Apps Script + Formspree backup Server-side passkey check is the real gate
+===== Modal Helpers ===== openModal(id) closeModal(id)
+===== Toast ===== showToast(message, type) type can be 'success', 'error', or omitted for default style.
+Event listeners attached at the bottom of the file:
+* Modal overlays close on background click
+* Passkey input submits on Enter
+* Search input submits on Enter
+* Filter selects/inputs trigger applyFilters() on change
+================================================================================ PART 2 — GOOGLE APPS SCRIPT WEB API
+________________
+
+
+2.1 OVERVIEW
+The backend is a single Apps Script file deployed as a Web App. It runs on Google's infrastructure and serves as a JSON API between the browser and the Google Sheet.
+Endpoint URL (current deployment): https://script.google.com/macros/s/AKfycbzP-jlIXRui2Um-tggHtpB5uZ6hNDaHncgChY0AmKC0B2-xToL3SUMyAcpS8vAEzIXGqQ/exec
+Authentication:
+* Anonymous (Web App deployed with "Anyone" access)
+* Mutations protected by a shared passkey validated server-side
+* The script itself runs as the sheet owner ("Execute as: Me")
+Quotas (free Google account):
+* ~20,000 requests/day
+* 6 second execution time per request
+* 90 minute total execution time per day
+________________
+
+
+2.2 REQUEST FORMAT
+GET requests use URL query parameters. POST requests send a JSON body with Content-Type: text/plain;charset=utf-8.
+IMPORTANT: The Content-Type must be text/plain (not application/json), even though the body IS JSON. This avoids a CORS preflight, which Apps Script does not respond to with proper CORS headers. The script parses e.postData.contents as JSON regardless of Content-Type.
+All responses are JSON with the following shape:
+Success: { "ok": true, "<resource>": <data> } Failure: { "ok": false, "error": "<message>" }
+________________
+
+
+2.3 ENDPOINT: GET /exec?action=listJobs
+Returns all active jobs from the Jobs sheet.
+Request: GET https://script.google.com/.../exec?action=listJobs
+Response (success): { "ok": true, "jobs": [ { "id": 1, "title": "Senior Frontend Engineer", "company": "Lumina Labs", "location": "San Francisco, CA", "type": "Full-time", "category": "Engineering", "salary": "$140k – $180k", "salaryNum": 180000, "description": "Build delightful user interfaces...", "requirements": ["5+ years experience", "..."], "tags": ["React", "TypeScript", "GraphQL"], "logo": "#4338ca", "posted": 2 }, ... ] }
+Notes: - Rows where status != 'active' are filtered out - requirements is split on newlines; tags is split on commas - posted is computed as days since posted_date
+________________
+
+
+2.4 ENDPOINT: POST /exec (action: createJob)
+Creates a new job listing. Requires the employer passkey.
+Request body: { "action": "createJob", "passkey": "employer2026", "job": { "title": "...", "company": "...", "location": "...", "type": "Full-time" | "Part-time" | "Contract" | "Remote", "category": "Engineering" | "Design" | ..., "salary": "$100k - $130k", "salaryNum": 130000, "description": "...", "requirements": ["...", "..."], "tags": ["...", "..."] } }
+Response (success): { "ok": true, "job": { ...full job object with assigned id... } }
+Response (failure): { "ok": false, "error": "Invalid passkey" }
+Server actions: - Validates passkey against EMPLOYER_PASSKEY constant in the script - Auto-increments id by finding max existing id in the sheet - Stamps posted_date with the current server time - Sets status to 'active' - If logo is not provided, picks a random color from a fixed palette - Appends row to the Jobs sheet in column-header order
+________________
+
+
+2.5 ENDPOINT: POST /exec (action: createApplication)
+Records a new application against a job. No passkey required.
+Request body: { "action": "createApplication", "application": { "job_id": 1, "job_title": "Senior Frontend Engineer", "company": "Lumina Labs", "applicant_name": "Jane Doe", "applicant_email": "jane@example.com", "resume_url": "https://...", "cover_letter": "..." } }
+Response (success): { "ok": true, "application": { ...full application record with id and timestamp... } }
+Server actions: - Auto-increments id - Stamps submitted_at with current server time - Appends row to the Applications sheet
+________________
+
+
+2.6 ERROR HANDLING
+Server-side:
+* All entry points are wrapped in try/catch
+* Caught errors return { ok: false, error: "<message>" } with HTTP 200
+* HTTP-level errors only occur for malformed requests or quota limits
+Frontend-side:
+* Network failures show an error toast and keep the form open
+* { ok: false } responses also trigger the error toast
+* The page load fallback to sampleJobs ensures the UI is never blank
+================================================================================ PART 3 — GOOGLE SHEET SCHEMA
+The sheet acts as the database. Two tabs must exist with the exact names below.
+________________
+
+
+3.1 TAB: Jobs
+Header row (row 1) — columns A through N:
+A: id number, auto-incremented B: title text C: company text D: location text E: type one of: Full-time, Part-time, Contract, Remote F: category one of: Engineering, Design, Marketing, Sales, Product, Data, Operations, Finance G: salary text (display string, e.g. "$100k - $130k") H: salaryNum number (used for sorting by salary) I: description text (can be multi-line) J: requirements text (newline-separated; split into array by API) K: tags text (comma-separated; split into array by API) L: logo text (hex color like "#4338ca") M: posted_date date/timestamp N: status text: "active" or "archived" (only "active" is returned)
+To remove a job from the live board without deleting it, change its status column to anything other than "active".
+________________
+
+
+3.2 TAB: Applications
+Header row (row 1) — columns A through I:
+A: id number, auto-incremented B: job_id number (foreign key to Jobs.id) C: job_title text (denormalized for convenience) D: company text (denormalized) E: applicant_name text F: applicant_email text G: resume_url text (URL) H: cover_letter text I: submitted_at timestamp
+================================================================================ PART 4 — THIRD-PARTY INTEGRATIONS
+________________
+
+
+4.1 FORMSPREE (EMAIL BACKUP)
+Formspree provides email delivery of form submissions. It runs in parallel with the Google Sheet writes — if Formspree fails, the sheet still records the data; if the sheet fails, Formspree still emails it.
+Endpoints: Applications: https://formspree.io/f/mbdbdjaw Job postings: https://formspree.io/f/xaqkqydr
+Request shape: Standard JSON POST with Content-Type: application/json The _subject field controls the email subject line
+Free-tier limits:
+* 50 submissions per form per month
+* First submission requires verification by clicking a link in the confirmation email Formspree sends to the form owner
+================================================================================ PART 5 — CONFIGURATION REFERENCE
+________________
+
+
+5.1 FRONTEND CONSTANTS (top of script.js)
+EMPLOYER_PASSKEY 'employer2026' FORMSPREE_APPLICATIONS 'https://formspree.io/f/mbdbdjaw' FORMSPREE_POSTINGS 'https://formspree.io/f/xaqkqydr' SHEETS_API 'https://script.google.com/macros/s/AKfycbzP-jlIXRui2Um-tggHtpB5uZ6hNDaHncgChY0AmKC0B2-xToL3SUMyAcpS8vAEzIXGqQ/exec'
+________________
+
+
+5.2 BACKEND CONSTANTS (top of Apps Script)
+EMPLOYER_PASSKEY 'employer2026' (must match frontend) JOBS_SHEET 'Jobs' (must match tab name exactly) APPS_SHEET 'Applications' (must match tab name exactly)
+IMPORTANT: If you change the passkey, change it in BOTH places. The frontend check is only a UX gate; the server check is the real gate.
+================================================================================ PART 6 — DEPLOYMENT & MAINTENANCE
+________________
+
+
+6.1 INITIAL DEPLOYMENT
+Frontend: Host index.html, styles.css, and script.js on any static host:
+* GitHub Pages (free)
+* Netlify (free)
+* Vercel (free)
+* Cloudflare Pages (free) Or open index.html directly from the filesystem for local testing.
+Backend (Apps Script):
+1. Open the Google Sheet
+2. Extensions → Apps Script
+3. Paste the script code
+4. Save (Ctrl/Cmd+S), name the project
+5. Deploy → New deployment
+6. Type: Web app
+7. Execute as: Me
+8. Who has access: Anyone
+9. Deploy → authorize → copy the URL
+________________
+
+
+6.2 UPDATING THE BACKEND
+When you change the Apps Script code:
+1. Save the script (Ctrl/Cmd+S)
+2. Deploy → Manage deployments
+3. Click the pencil icon on the active deployment
+4. Version dropdown: select "New version"
+5. Description: note what changed
+6. Deploy
+The URL stays the same across versions, so no frontend update is needed.
+________________
+
+
+6.3 ADDING SEED DATA
+To pre-populate the Jobs sheet with the 12 sample listings, you can copy them from the sampleJobs array in script.js, formatted to match the column order in section 3.1.
+________________
+
+
+6.4 ROTATING THE PASSKEY
+1. Update EMPLOYER_PASSKEY in the Apps Script → redeploy as new version
+2. Update EMPLOYER_PASSKEY in script.js
+3. Re-upload the frontend to your host
+================================================================================ PART 7 — TROUBLESHOOTING
+Symptom: Page shows samples instead of sheet data
+* Open browser DevTools → Console
+* Look for "Could not reach sheet" warning
+* Visit the Apps Script URL directly — should return JSON
+* If you get an authorization page, the deployment isn't set to "Anyone"
+Symptom: "Could not publish — please try again"
+* Open DevTools → Network tab, find the failed request
+* Click it and look at the Response tab
+* Common error: "Invalid passkey" — the frontend and backend passkeys differ
+* Common error: "Missing sheet tab: Jobs" — tab is named differently
+Symptom: Applications submit successfully but don't appear in the sheet
+* Verify the Applications tab exists with that exact name (case-sensitive)
+* Verify the header row matches section 3.2 exactly
+Symptom: Formspree emails aren't arriving
+* Check that you verified the form by clicking the confirmation link Formspree sent after the first submission
+* Check your spam folder
+* Confirm you're under the 50/month free-tier limit
+Symptom: After editing the Apps Script, changes don't take effect
+* You forgot to deploy a new version (see section 6.2)
+* Saving alone is not enough — Web Apps run the last deployed version
+================================================================================ END OF DOCUMENT
