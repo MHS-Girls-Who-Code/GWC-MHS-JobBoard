@@ -693,17 +693,17 @@ main {
       <div class="form-row">
         <div class="form-group">
           <label>Job Title *</label>
-          <input type="text" id="post-title" placeholder="Senior Frontend Engineer" />
+          <input type="text" id="post-title" placeholder="Senior Frontend Engineer" maxlength="500" />
         </div>
         <div class="form-group">
           <label>Company *</label>
-          <input type="text" id="post-company" placeholder="Acme Inc." />
+          <input type="text" id="post-company" placeholder="Acme Inc." maxlength="200" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Location *</label>
-          <input type="text" id="post-location" placeholder="San Francisco, CA" />
+          <input type="text" id="post-location" placeholder="San Francisco, CA" maxlength="200" />
         </div>
         <div class="form-group">
           <label>Job Type *</label>
@@ -731,20 +731,20 @@ main {
         </div>
         <div class="form-group">
           <label>Salary Range *</label>
-          <input type="text" id="post-salary" placeholder="$80k – $120k" />
+          <input type="text" id="post-salary" placeholder="$80k – $120k" maxlength="200" />
         </div>
       </div>
       <div class="form-group">
         <label>Description *</label>
-        <textarea id="post-description" placeholder="Describe the role..."></textarea>
+        <textarea id="post-description" placeholder="Describe the role..." maxlength="5000"></textarea>
       </div>
       <div class="form-group">
         <label>Requirements (one per line)</label>
-        <textarea id="post-requirements" placeholder="5+ years experience&#10;Strong communication skills"></textarea>
+        <textarea id="post-requirements" placeholder="5+ years experience&#10;Strong communication skills" maxlength="5000"></textarea>
       </div>
       <div class="form-group">
         <label>Tags (comma separated)</label>
-        <input type="text" id="post-tags" placeholder="React, TypeScript, Remote-friendly" />
+        <input type="text" id="post-tags" placeholder="React, TypeScript, Remote-friendly" maxlength="200" />
       </div>
     </div>
     <div class="modal-footer">
@@ -764,20 +764,20 @@ main {
       <div class="form-row">
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" id="apply-name" />
+          <input type="text" id="apply-name" maxlength="200" />
         </div>
         <div class="form-group">
           <label>Email *</label>
-          <input type="email" id="apply-email" />
+          <input type="email" id="apply-email" maxlength="200" />
         </div>
       </div>
       <div class="form-group">
         <label>Resume/Portfolio URL</label>
-        <input type="url" id="apply-resume" placeholder="https://..." />
+        <input type="url" id="apply-resume" placeholder="https://..." maxlength="500" />
       </div>
       <div class="form-group">
         <label>Cover Letter</label>
-        <textarea id="apply-cover" placeholder="Tell us why you're a great fit..."></textarea>
+        <textarea id="apply-cover" placeholder="Tell us why you're a great fit..." maxlength="5000"></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -794,7 +794,7 @@ main {
      ============================================================ -->
 <script>
 // ===== Config =====
-const EMPLOYER_PASSKEY = 'employer2026';
+const EMPLOYER_PASSKEY_HASH = 'ac10d4a58b7606146de9f8853021934f43de3f52f432a5fc62638834b3595df5';
 const FORMSPREE_APPLICATIONS = 'https://formspree.io/f/mbdbdjaw';
 const FORMSPREE_POSTINGS = 'https://formspree.io/f/xaqkqydr';
 const SHEETS_API = 'https://script.google.com/macros/s/AKfycbzP-jlIXRui2Um-tggHtpB5uZ6hNDaHncgChY0AmKC0B2-xToL3SUMyAcpS8vAEzIXGqQ/exec';
@@ -964,7 +964,7 @@ function renderJobs(list, container) {
     <div class="job-card" onclick="openJobDetail(${job.id})">
       <div class="job-card-header">
         <div style="display:flex; gap:0.85rem; align-items:flex-start; flex:1">
-          <div class="company-logo" style="background:${job.logo}">${getInitials(job.company)}</div>
+          <div class="company-logo" style="background:${safeCssColor(job.logo)}">${getInitials(job.company)}</div>
           <div style="min-width:0">
             <div class="job-title">${escapeHtml(job.title)}</div>
             <div class="job-company">${escapeHtml(job.company)}</div>
@@ -994,6 +994,11 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function safeCssColor(value) {
+  // Allow only hex colors (#abc or #aabbcc) and named colors (letters only)
+  return /^(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)$/.test(value) ? value : '#6c757d';
 }
 
 // ===== Filtering =====
@@ -1073,7 +1078,7 @@ function openJobDetail(id) {
   currentDetailJobId = id;
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-header">
-      <div class="company-logo" style="background:${job.logo}; width:60px; height:60px; font-size:1.4rem">${getInitials(job.company)}</div>
+      <div class="company-logo" style="background:${safeCssColor(job.logo)}; width:60px; height:60px; font-size:1.4rem">${getInitials(job.company)}</div>
       <div style="flex:1">
         <div class="detail-title">${escapeHtml(job.title)}</div>
         <div class="detail-company">${escapeHtml(job.company)}</div>
@@ -1132,7 +1137,7 @@ function submitApplication() {
     showToast('Please fill in your name and email', 'error');
     return;
   }
-  if (!email.includes('@')) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showToast('Please enter a valid email', 'error');
     return;
   }
@@ -1195,11 +1200,14 @@ function openPostJob() {
   }
 }
 
-function verifyPasskey() {
+async function verifyPasskey() {
   const input = document.getElementById('passkey-input');
   const error = document.getElementById('passkey-error');
   const modal = document.querySelector('#modal-passkey .modal');
-  if (input.value === EMPLOYER_PASSKEY) {
+  const encoded = new TextEncoder().encode(input.value);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+  const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  if (hashHex === EMPLOYER_PASSKEY_HASH) {
     isEmployerVerified = true;
     closeModal('modal-passkey');
     showToast('Access granted ✓', 'success');
@@ -1245,7 +1253,7 @@ function submitJob() {
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       action: 'createJob',
-      passkey: EMPLOYER_PASSKEY,
+      passkey: document.getElementById('passkey-input')?.value ?? '',
       job: jobPayload
     })
   }).then(r => r.json());
