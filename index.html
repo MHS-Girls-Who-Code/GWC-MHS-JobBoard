@@ -25,10 +25,10 @@
 <!-- LISTINGS VIEW -->
 <div class="view active" id="view-listings">
   <section class="hero">
-    <h1>Find Your Next Opportunity</h1>
-    <p>Local companies hiring teens like you! Apply today and start learning job skills.</p>
+    <h1>Find Your People.</h1>
+    <p>MHS Club's are looking for YOU!</p>
     <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Search by title, company, or keyword..." />
+      <input type="text" id="search-input" placeholder="Search by title, Club, or keyword..." />
       <button onclick="applyFilters()">Search</button>
     </div>
   </section>
@@ -126,19 +126,19 @@
   <div class="modal">
     <div class="modal-header">
       <div>
-        <h2>Post a New Job</h2>
-        <div class="success-badge" style="margin-top:0.5rem">✓ Verified Employer</div>
+        <h2>Post a New Position</h2>
+        <div class="success-badge" style="margin-top:0.5rem">✓ Verified Club Leader</div>
       </div>
       <button class="modal-close" onclick="closeModal('modal-post')">&times;</button>
     </div>
     <div class="modal-body">
       <div class="form-row">
         <div class="form-group">
-          <label>Job Title *</label>
+          <label>Position Title *</label>
           <input type="text" id="post-title" placeholder="Senior Frontend Engineer" maxlength="500" />
         </div>
         <div class="form-group">
-          <label>Company *</label>
+          <label>Club *</label>
           <input type="text" id="post-company" placeholder="Acme Inc." maxlength="200" />
         </div>
       </div>
@@ -148,12 +148,14 @@
           <input type="text" id="post-location" placeholder="San Francisco, CA" maxlength="200" />
         </div>
         <div class="form-group">
-          <label>Job Type *</label>
+          <label>Position Type *</label>
           <select id="post-type">
-            <option>Full-time</option>
-            <option>Part-time</option>
-            <option>Contract</option>
-            <option>Remote</option>
+            <option>President</option>
+            <option>Vice President</option>
+            <option>Treasurer</option>
+            <option>Secretary</option>
+            <option>Creative Director</option>
+            <option>Member</option>
           </select>
         </div>
       </div>
@@ -161,18 +163,16 @@
         <div class="form-group">
           <label>Category *</label>
           <select id="post-category">
-            <option>Engineering</option>
-            <option>Design</option>
-            <option>Marketing</option>
-            <option>Sales</option>
-            <option>Product</option>
-            <option>Data</option>
-            <option>Operations</option>
-            <option>Finance</option>
+            <option>Honor Society</option>
+            <option>STEM</option>
+            <option>Art</option>
+            <option>Academic</option>
+            <option>Volunteering</option>
+            <option>Social</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Salary Range *</label>
+          <label>Compensation? *</label>
           <input type="text" id="post-salary" placeholder="$80k – $120k" maxlength="200" />
         </div>
       </div>
